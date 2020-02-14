@@ -6,7 +6,8 @@ import (
 )
 
 // add creates a golang ast made up of binary addition exprs
-func add(nodes []ast.Node) ast.Node {
+func add(_nodes []ast.Node) ast.Node {
+	nodes := reverse(_nodes)
 	var (
 		root   *ast.BinaryExpr = nil
 		latest *ast.BinaryExpr = nil
@@ -23,9 +24,9 @@ func add(nodes []ast.Node) ast.Node {
 			break
 		}
 
-		this := &ast.BinaryExpr {
+		this := &ast.BinaryExpr{
 			Op: token.ADD,
-			Y: node.(ast.Expr),
+			Y:  node.(ast.Expr),
 		}
 		if latest != nil {
 			latest.X = this
@@ -38,4 +39,13 @@ func add(nodes []ast.Node) ast.Node {
 	}
 
 	return root
+}
+
+// reverse reverses the given slice
+func reverse(s []ast.Node) []ast.Node {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+
+	return s
 }

@@ -2,7 +2,6 @@ package generator
 
 import (
 	"go/ast"
-	"go/token"
 	"strings"
 )
 
@@ -11,11 +10,7 @@ func makeStrs(raws []string) ast.Node {
 }
 
 func makeStr(str string) ast.Node {
-	i := ast.BasicLit{
-		Kind: token.STRING,
-		Value: "`" + str + "`",
-	}
-	return &i
+	return makeLit("`" + str + "`")
 }
 
 // toStrs transforms an array of strings into an
