@@ -96,62 +96,7 @@ func Visit(fset *token.FileSet, node *ast.File) astutil.ApplyFunc {
 					c.Replace(final)
 				}
 			}
-		}/*
-		switch x := n.(type) {
-		case *ast.FuncDecl:
-			found, extras, index := false, []ast.Stmt{}, 0
-			f := subVisitor(fset, importName, &found, &extras, &index)
-			astutil.Apply(x, f, nil)
-			if found {
-				// we got some extras to append at the
-				// beginning of the function's body
-				x.Body.List = append(extras, x.Body.List...)
-			}
-		}*/
-		return true
-	}
-}
-/*
-func subVisitor(fset *token.FileSet, importName string, found *bool, e *[]ast.Stmt, index *int) astutil.ApplyFunc {
-	return func(c *astutil.Cursor) bool {
-		n := c.Node()
-		c.InsertBefore()
-		switch x := n.(type) {
-		case *ast.CallExpr:
-			fun, ok := x.Fun.(*ast.SelectorExpr)
-			if !ok {
-				break
-			}
-
-			scope := fun.X.(*ast.Ident).Name
-			name := fun.Sel.Name
-			if scope == importName && name == "HTML" {
-				arg := x.Args[0].(*ast.BasicLit)
-				if len(x.Args) != 1 || arg.Kind != token.STRING {
-					log.Fatalf("Can only call randr.HTML with a single string argument. At %v\n", fset.Position(n.Pos()))
-				}
-
-				// Everything is correnct, we are sure that this
-				// CallExpr is a call to randr.HTML so we replace it
-				// with a properly generated ast
-				raws, exprs, err := parser.Parse(arg.Value)
-				if err != nil {
-					log.Fatal("Parse error: " + err.Error())
-				}
-
-				final, extras, err := Generate(raws, exprs)
-				if err != nil {
-					log.Fatal("Generation error: " + err.Error())
-				}
-				if len(extras) > 0 {
-					*found = true
-					*e = extras
-				}
-				c.Replace(final)
-			}
 		}
-
 		return true
 	}
 }
-*/
