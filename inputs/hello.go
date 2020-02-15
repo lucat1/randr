@@ -26,8 +26,10 @@ func MultipleHellos(props Props) string {
 		<div>
 			<h1>Hello list</h1>
 
-      {#for _, name := range names}
-        <Hello name={name}></Hello>
+			{#for _, name := range names}
+				{#for _, _name := range names}
+					<Hello name={name}>{_name}</Hello>
+				{/for}
 			{/for}
     </div>
   `)

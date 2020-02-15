@@ -11,6 +11,7 @@ type node struct {
 	kind     nodeType
 	value    string
 	children []*node
+	parent   *node
 }
 
 func nest(parts []string) []*node {
@@ -23,9 +24,13 @@ func nest(parts []string) []*node {
 			continue
 		}
 		curr := gen(part)
+		if depth != 0 {
+			curr.parent = latest
+		}
 		// decrease the depth and ignore the ending tag
 		if curr.kind == exprType && part[1] == '/' {
 			depth--
+			latest = curr.parent
 			continue
 		}
 
@@ -41,11 +46,9 @@ func nest(parts []string) []*node {
 		// increase the depth and handle the expression
 		if curr.kind == exprType && part[1] == '#' {
 			depth++
-		}
 
-		// if what we had was an expression we save it
-		// as it will be used later to nest its children
-		if curr.kind == exprType {
+			// if what we had was an expression we save it
+			// as it will be used later to nest its children
 			latest = curr
 		}
 	}

@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/lucat1/randr/generator"
+	"github.com/lucat1/randr/compiler/generator"
 	"golang.org/x/tools/go/ast/astutil"
 )
 

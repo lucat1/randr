@@ -36,12 +36,12 @@ func loop(parent *html.Node, strict bool, raws []string, exprs []string) ([]stri
 			if !strict {
 				input = strings.TrimSpace(e.Data)
 			}
-
+			
 			matches := curly.FindAll([]byte(input), -1) // Find all expressions
 			if len(matches) > 0 {
-				raws, exprs = literate(input, matches, raws, exprs) // Split static strings and expressions
+				raws, exprs = literate(input, matches, strict, raws, exprs) // Split static strings and expressions
 			} else {
-				raws, exprs = addToRaw(input, raws, exprs)
+				raws, exprs = addToRaw(input, strict, raws, exprs)
 			}
 			break
 
@@ -67,21 +67,22 @@ func loop(parent *html.Node, strict bool, raws []string, exprs []string) ([]stri
 
 // literate transforms the input into a slice
 // resenbling javascript's template literals.
-func literate(input string, matches [][]byte, raws []string, exprs []string) ([]string, []string) {
+func literate(input string, matches [][]byte, strict bool, raws []string, exprs []string) ([]string, []string) {
 	for i, match := range matches {
 		// Map experssions to the exprs slice
 		// and order raw strings with them
 		parts := strings.SplitN(input, string(match), 2)
-		raws, exprs = addToRaw(parts[0], raws, exprs)
+		raws, exprs = addToRaw(parts[0], strict, raws, exprs)
 		
 		if len(parts) > 1 {
 			exprs = append(exprs, string(match))
 			if parts[1] != "" {
-				input = parts[1] // Dont reinterate on the already parsed part of the string
+				input = parts[1] // Dont reiterate on the already parsed part of the string
 				if i == len(matches)-1 {
 					// finally append the remaining of the string (if any)
 					// to the raws array
-					raws = append(raws, parts[1])
+					raws, exprs = addToRaw(parts[1], strict, raws, exprs)
+					//raws = append(raws, parts[1])
 				}
 			}
 		}
@@ -92,7 +93,13 @@ func literate(input string, matches [][]byte, raws []string, exprs []string) ([]
 
 // addToRaw append the string to the raws array
 // in two ways depending on the length of the exprs array
-func addToRaw(tba string, raws []string, exprs []string) ([]string, []string) {
+func addToRaw(tba string, strict bool, raws []string, exprs []string) ([]string, []string) {
+	if !strict {
+		// Trim useless spaces to be able to do some 
+		// cleaner code output afterwards
+		tba = strings.TrimSpace(tba)
+	}
+
 	if len(exprs) >= len(raws) {
 		// Something new has been added in between
 		// we append it to the array
@@ -110,14 +117,14 @@ func addToRaw(tba string, raws []string, exprs []string) ([]string, []string) {
 // and all its attributes preparing the the children
 // to be handled in loop afterwards
 func appendOpeningTag(node *html.Node, raws []string, exprs []string) ([]string, []string) {
-	raws, exprs = addToRaw("<" + node.Data, raws, exprs)
+	raws, exprs = addToRaw("<" + node.Data, true, raws, exprs)
 	for _, attr := range node.Attr {
 		raws, exprs = addToRaw(
 			" " + attr.Key + "=\"" + attr.Val + "\"", 
-			raws, exprs,
+			true, raws, exprs,
 		)
 	}
-	raws, exprs = addToRaw(">", raws, exprs)
+	raws, exprs = addToRaw(">", true, raws, exprs)
 
 	return raws, exprs
 }
@@ -125,5 +132,5 @@ func appendOpeningTag(node *html.Node, raws []string, exprs []string) ([]string,
 // appendClosingTag appends the ending part of
 // the tag after all children have been handled
 func appendClosingTag(node *html.Node, raws []string, exprs []string) ([]string, []string) {
-	return addToRaw("</" + node.Data + ">", raws, exprs)
+	return addToRaw("</" + node.Data + ">", true, raws, exprs)
 }
