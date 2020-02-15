@@ -1,5 +1,7 @@
 package main
 
+// +build ignore
+
 import "github.com/lucat1/randr"
 
 type Props struct {
