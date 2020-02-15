@@ -113,7 +113,12 @@ func makeFor(expr *node) (ast.Node, []ast.Stmt, error) {
 			body.List = append(body.List, extras...)
 			left := makeIdent(_res)
 			for _, node := range nodes {
-				right := makeIdent(node.(*ast.BasicLit).Value)
+				var right ast.Expr
+				if lit, ok := node.(*ast.BasicLit); ok {
+					right = makeIdent(lit.Value)
+				} else {
+					right = node.(ast.Expr)
+				}
 				body.List = append(body.List, makeAssign(left, right))
 			}
 		}

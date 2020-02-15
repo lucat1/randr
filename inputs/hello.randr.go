@@ -1,7 +1,5 @@
 package main
 
-// +build ignore
-
 import (
 	"fmt"
 
@@ -9,17 +7,16 @@ import (
 )
 
 type HelloProps struct {
-	Children string
-	Name string
+	Children	string
+	Name		string
 }
 
 // Hello renders a single h1 tag with an hello message
 func Hello(ctx randr.Context) string {
 	props := ctx.Props.(*HelloProps)
 
-	return randr.HTML(`
-    <h1 style="color: red">Hello {props.Name}!; children: {props.Children}</h1>
-  `)
+	return `<h1 style="color: red">Hello ` + props.Name + `!; children: ` + props.Children + `</h1>`
+
 }
 
 // MultipleHellos renders various hellos
@@ -28,16 +25,13 @@ func MultipleHellos(ctx randr.Context) string {
 		"Anna",
 		"Tess",
 	}
+	var XVlBzgbaiC string
+	for _, name := range names {
+		XVlBzgbaiC += randr.MustRender(Hello, &HelloProps{Name: `name`, Children: name})
+	}
 
-	return randr.HTML(`
-		<div>
-			<h1>Hello list</h1>
+	return `<div><h1>Hello list</h1>` + XVlBzgbaiC + `</div>`
 
-			{#for _, name := range names}
-				<Hello name={name}>{name}</Hello>
-			{/for}
-    </div>
-  `)
 }
 
 func main() {

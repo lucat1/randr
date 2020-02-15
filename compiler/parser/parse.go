@@ -1,9 +1,11 @@
 package parser
 
 import (
+	"encoding/json"
 	"regexp"
 	"strings"
 
+	"github.com/iancoleman/strcase"
 	"golang.org/x/net/html"
 )
 
@@ -48,15 +50,19 @@ func loop(parent *html.Node, strict bool, raws []string, exprs []string) ([]stri
 		case html.ElementNode:
 			tag := e.Data
 			if !IsTagValid(tag) {
-				//fmt.Println("Custom tag", tag)
-				//continue
+				attrs, _ := json.Marshal(e.Attr)
+				exprs = append(exprs, "{#randr " + strcase.ToCamel(tag) + " " + string(attrs) + "}")
+				raws = append(raws, "")
+				raws, exprs = loop(e, strict || e.Data == "pre", raws, exprs)
+				exprs, raws = append(exprs, "{/randr}"), append(raws, "")
+				continue
 			}
 
 			// Append the static string to the previous
 			// or create a new one if something has been
 			// inserted in between
 			raws, exprs = appendOpeningTag(e, raws, exprs)
-			raws, exprs = loop(e, e.Data == "pre" || strict, raws, exprs)
+			raws, exprs = loop(e, strict || e.Data == "pre", raws, exprs)
 			raws, exprs = appendClosingTag(e, raws, exprs)
 			break
 		}
@@ -97,7 +103,7 @@ func addToRaw(tba string, strict bool, raws []string, exprs []string) ([]string,
 	if !strict {
 		// Trim useless spaces to be able to do some 
 		// cleaner code output afterwards
-		tba = strings.TrimSpace(tba)
+		tba = strings.Replace(strings.Replace(tba, "\t", "", -1), "\n", "", -1)
 	}
 
 	if len(exprs) >= len(raws) {

@@ -22,18 +22,28 @@ func toNodes(nodes []*node) ([]ast.Node, []ast.Stmt) {
 
 			input := node.value[2 : len(node.value)-1]
 			rule := strings.Split(input, " ")[0]
+			var (
+				tok ast.Node
+				extra []ast.Stmt
+				err error
+			)
+
 			switch rule {
 			case "for":
-				tok, extra, err := makeFor(node)
-				if err != nil {
-					log.Fatal("Error while parsing for loop: " + err.Error())
-				}
-				res = append(res, tok)
-				extras = append(extras, extra...)
+				tok, extra, err = makeFor(node)
+			
+			case "randr":
+				tok, extra, err = makeComponent(node)
 
 			default:
 				log.Fatal("Unhandled expression: " + node.value)
 			}
+
+			if err != nil {
+				log.Fatal("Error while parsing complex expr node: " + err.Error())
+			}
+			res = append(res, tok)
+			extras = append(extras, extra...)
 		}
 	}
 	return res, extras

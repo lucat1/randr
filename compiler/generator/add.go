@@ -7,6 +7,11 @@ import (
 
 // add creates a golang ast made up of binary addition exprs
 func add(_nodes []ast.Node) ast.Node {
+	if len(_nodes) == 1 {
+		// Prevent from attempting to sum only one node
+		return _nodes[0]
+	}
+
 	nodes := reverse(_nodes)
 	var (
 		root   *ast.BinaryExpr = nil

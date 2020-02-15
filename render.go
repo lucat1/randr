@@ -6,9 +6,9 @@ package randr
 type Component func(context Context) string
 
 // RenderWithData renders a component into a string with the given props and initial context data
-func RenderWithData(root Component, props BasicProps, data map[string]interface{}) (string, Context) {
+func RenderWithData(root Component, props interface{}, data map[string]interface{}) (string, Context) {
 	ctx := Context{
-		Props: &props,
+		Props: props,
 		Data: &data,
 	}
 
@@ -16,7 +16,7 @@ func RenderWithData(root Component, props BasicProps, data map[string]interface{
 }
 
 // Render renders a component into a string with the given props
-func Render(root Component, props BasicProps) (string, Context) {
+func Render(root Component, props interface{}) (string, Context) {
 	return RenderWithData(root, props, map[string]interface{}{})
 }
 
@@ -26,7 +26,7 @@ func Render(root Component, props BasicProps) (string, Context) {
 // rendering a custom element from a computed template literal.
 //
 // Should always use `Render` or `RenderWithData`
-func MustRender(c Component, props BasicProps) string {
+func MustRender(c Component, props interface{}) string {
 	res, _ := RenderWithData(c, props, map[string]interface{}{})
 	return res
 }

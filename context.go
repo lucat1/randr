@@ -1,8 +1,8 @@
 package randr
 
-// BasicProps is a struct which must be implemented
-// by any props implementation, and contains the children
-// string which can always be given to any custom component
+// BasicProps is a struct used in many components
+// which only care about their HTML children represented
+// as a rendered string of valid HTML code
 type BasicProps struct {
 	Children string
 }
@@ -12,7 +12,7 @@ type BasicProps struct {
 type Context struct {
 	// Props are the arguments, attributes given to
 	// each component function as the first argument
-	Props *BasicProps
+	Props interface{}
 
 	// Data is a map containing the rendering
 	// context data, set by components
