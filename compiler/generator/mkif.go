@@ -20,29 +20,60 @@ func makeIf(expr *node) (ast.Node, []ast.Stmt, error) {
 	}
 	forLoop := reflect.Indirect(reflect.ValueOf(stmt))
 
-	// Build the for loop body(expr.children if any)
-	body := makeBlock(_res, expr.children)
+	var (
+		body *ast.BlockStmt = nil
+		els  *ast.BlockStmt = nil
+		foundElse = false
+		elseIndex = -1
+	)
+	for i, child := range expr.children {
+		if child.kind == exprType && child.value == "{else}" {
+			foundElse = true
+			elseIndex = i
+		}
+	}
+
+	if foundElse {
+		// build both the body and the else block
+		bodyChildren := expr.children[:elseIndex]
+		elseChildren := expr.children[elseIndex:]
+		body = makeBlock(_res, bodyChildren)
+		els = makeBlock(_res, elseChildren)
+	} else {
+		// Build the if body(expr.children if any) with all the nodes
+		body = makeBlock(_res, expr.children)
+	}
 	
 	// Set the body value
-	if f := forLoop.FieldByName("Body"); f.IsValid() && f.CanSet() {
-		f.Set(reflect.ValueOf(body))
+	if b := forLoop.FieldByName("Body"); b.IsValid() && b.CanSet() {
+		if e := forLoop.FieldByName("Else"); e.IsValid() && e.CanSet() {
+			if body != nil {
+				b.Set(reflect.ValueOf(body))
+			}
 
-		return res, []ast.Stmt{
-			&ast.DeclStmt{
-				Decl: &ast.GenDecl{
-					Tok: token.VAR,
-					Specs: []ast.Spec{
-						&ast.ValueSpec{
-							Type: makeIdent("string"),
-							Names: []*ast.Ident{
-								makeIdent(_res),
+			if els != nil {
+				e.Set(reflect.ValueOf(els))
+			}
+
+			return res, []ast.Stmt{
+				&ast.DeclStmt{
+					Decl: &ast.GenDecl{
+						Tok: token.VAR,
+						Specs: []ast.Spec{
+							&ast.ValueSpec{
+								Type: makeIdent("string"),
+								Names: []*ast.Ident{
+									makeIdent(_res),
+								},
 							},
 						},
 					},
 				},
-			},
-			stmt,
-		}, nil
+				stmt,
+			}, nil
+		}
+
+		return nil, nil, errors.New("Cannot set else body")
 	}
 
 	return nil, nil, errors.New("Cannot set if body")

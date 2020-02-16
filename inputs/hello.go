@@ -44,6 +44,8 @@ func MultipleHellos(ctx randr.Context) string {
 
 				{#if name == "Anna"}
 					<h1>what a special name</h1>
+				{else}
+					<h1>boring name</h1>
 				{/if}
 			{/for}
     </div>
