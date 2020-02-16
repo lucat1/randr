@@ -1,12 +1,18 @@
 package parser
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"strconv"
+)
 
 // Validate checks if the ammount of exprs is appropriate
 // for the ammount of raw strins
 func Validate(raws []string, exprs []string) error {
 	if len(raws)-1 != len(exprs) {
-		return errors.New("Error, invalid parsing. The number of exprs doesn't match the number of raws-1")
+		fmt.Printf("%q %q\n", raws, exprs)
+		r, e := strconv.Itoa(len(raws)), strconv.Itoa(len(exprs))
+		return errors.New("The number of exprs doesn't match the number of raws-1 (" + r + ", " + e + ")")
 	}
 
 	// loop trough all experssions and count the depth to see

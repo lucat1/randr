@@ -34,7 +34,13 @@ func MultipleHellos(ctx randr.Context) string {
 			<h1>Hello list</h1>
 
 			{#for _, name := range names}
-				<Hello name={name}>{name}</Hello>
+				<Hello name="{name}">
+					This is a test {name}
+
+					{#for _, name1 := range names}
+						{name1} once again {name}
+					{/for}
+				</Hello>
 			{/for}
     </div>
   `)

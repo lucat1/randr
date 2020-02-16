@@ -32,19 +32,7 @@ func loop(parent *html.Node, strict bool, raws []string, exprs []string) ([]stri
 	for e := parent.FirstChild; e != nil; e = e.NextSibling {
 		switch e.Type {
 		case html.TextNode:
-			// Remove \n and \t if we arent side a pre element
-			// to check that out we use the `strict` argument
-			input := e.Data
-			if !strict {
-				input = strings.TrimSpace(e.Data)
-			}
-			
-			matches := curly.FindAll([]byte(input), -1) // Find all expressions
-			if len(matches) > 0 {
-				raws, exprs = literate(input, matches, strict, raws, exprs) // Split static strings and expressions
-			} else {
-				raws, exprs = addToRaw(input, strict, raws, exprs)
-			}
+			raws, exprs = Text(e.Data, strict, raws, exprs)
 			break
 
 		case html.ElementNode:
@@ -68,6 +56,23 @@ func loop(parent *html.Node, strict bool, raws []string, exprs []string) ([]stri
 		}
 	}
 
+	return raws, exprs
+}
+
+// Text handles the parsing of text values
+func Text(input string, strict bool, raws []string, exprs []string) ([]string, []string) {
+	// Remove \n and \t if we arent side a pre element
+	// to check that out we use the `strict` argument
+	if !strict {
+		input = strings.TrimSpace(input)
+	}
+	
+	matches := curly.FindAll([]byte(input), -1) // Find all expressions
+	if len(matches) > 0 {
+		raws, exprs = literate(input, matches, strict, raws, exprs) // Split static strings and expressions
+	} else {
+		raws, exprs = addToRaw(input, strict, raws, exprs)
+	}
 	return raws, exprs
 }
 

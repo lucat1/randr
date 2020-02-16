@@ -52,14 +52,10 @@ func makeComponent(expr *node) (ast.Node, []ast.Stmt, error) {
 		key := strcase.ToCamel(prop.Key)
 		// We gotta parse the value as a whole new template
 		// because theoretically it could contain anything
-		raws, exprs, err := parser.Parse(prop.Val)
-		if err != nil {
-			log.Fatal("Parse error: " + err.Error())
-		}
-
+		raws, exprs := parser.Text(prop.Val, false, []string{}, []string{})
 		value, e, err := Generate(raws, exprs)
 		if err != nil {
-			log.Fatal("Generation error: " + err.Error())
+			log.Fatal("Generation error inside custom component props: " + err.Error())
 		}
 		extras = append(extras, e...)
 		props.Elts = append(props.Elts, &ast.KeyValueExpr{
