@@ -11,7 +11,7 @@ import (
 )
 
 // A convenience function for parsing a Stmt by wrapping it in a func literal
-func parseStmt(stmt string) (ast.Stmt, error) {
+func parseStmt(input string) (ast.Stmt, error) {
 	// parser.ParseExpr has some quirks, for example it won't parse unused map literals as
 	// ExprStmts. Unused map literals are technically illegal, but it would be
 	// nice to check them at a later stage. Therefore, we want to parse expressions
@@ -19,23 +19,27 @@ func parseStmt(stmt string) (ast.Stmt, error) {
 	// However, there is a bug in parser.ParseExpr that it does not detect excess input.
 	// Therefore, the _ of _ = 1 will be parsed as an expression. To avoid this, attempt
 	// to parse the input as a statement first, and fall back to an expression
-	expr := "func(){" + stmt + ";}"
-	if e, err := parser.ParseExpr(expr); err != nil {
-		if e, err := parser.ParseExpr(stmt); err == nil {
+	expr := "func(){" + input + ";}"
+	e, err := parser.ParseExpr(expr)
+	if err != nil {
+		if e, err := parser.ParseExpr(input); err == nil {
 			return &ast.ExprStmt{X: e}, nil
 		}
+
 		errs := err.(scanner.ErrorList)
 		for i := range errs {
 			errs[i].Pos.Offset -= 7
 			errs[i].Pos.Column -= 7
 		}
+
 		return nil, errs
-	} else {
-		node := e.(*ast.FuncLit).Body.List[0]
-		if stmt, ok := node.(ast.Stmt); !ok {
-			return nil, fmt.Errorf("%T not supported", node)
-		} else {
-			return stmt, nil
-		}
 	}
+
+	node := e.(*ast.FuncLit).Body.List[0]
+	stmt, ok := node.(ast.Stmt)
+	if !ok {
+		return nil, fmt.Errorf("%T not supported", node)
+	}
+	
+	return stmt, nil
 }
