@@ -7,17 +7,6 @@ import (
 	"reflect"
 )
 
-type forParserState int
-
-const (
-	forParserIdle = iota
-	forParserFor
-	forParserKey
-	forParserValue
-	forParserRange
-	forParserSlice
-)
-
 // makeFor generates a for loop in golang ast
 // from a string, also doing some typechecking
 // via the integrated golang parser (parsing a fake expr/stmt)
