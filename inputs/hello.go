@@ -4,13 +4,14 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/lucat1/randr"
 )
 
 type HelloProps struct {
 	Children string
-	Name string
+	Name     string
 }
 
 // Hello renders a single h1 tag with an hello message
@@ -37,8 +38,8 @@ func MultipleHellos(ctx randr.Context) string {
 				<Hello name="{name}">
 					This is a test {name}
 
-					{#for _, name1 := range names}
-						{name1} once again {name}
+					{#for i := 1; i < 5; i++}
+						{name} -- #{strconv.Itoa(i)} 
 					{/for}
 				</Hello>
 			{/for}

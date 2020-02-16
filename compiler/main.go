@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"go/parser"
 	"go/printer"
 	"go/token"
@@ -13,10 +14,22 @@ import (
 	"golang.org/x/tools/go/ast/astutil"
 )
 
-func main() {
+var (
+	write *bool
+	watch *bool
+)
+
+func init() {
+	write = flag.Bool("write", true, "Write files automatically after compilation")
+	watch = flag.Bool("watch", false, "Watch for file changes on a file or a directory")
 	flag.Parse()
+}
+
+func main() {
 	if flag.NArg() < 1 {
-		log.Fatal("Wrong usage, must provide at least one file source: randr <file.go>")
+		fmt.Fprintf(os.Stderr, "Usage: %s [opts] <input>\nOpts:\n", os.Args[0])
+
+		flag.PrintDefaults()
 	}
 
 	fset := token.NewFileSet()
@@ -24,10 +37,9 @@ func main() {
 	if err != nil {
 		log.Fatal("Could not parse input file:" + err.Error())
 	}
+
 	cparser.CheckComment(node, fset)
-
-	//ast.Print(fset, node)
 	astutil.Apply(node, generator.Visit(fset, node), nil)
-
 	printer.Fprint(os.Stdout, fset, node)
+	
 }
