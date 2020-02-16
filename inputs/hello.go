@@ -4,7 +4,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/lucat1/randr"
 )
@@ -42,6 +41,10 @@ func MultipleHellos(ctx randr.Context) string {
 						{name} -- #{strconv.Itoa(i)} 
 					{/for}
 				</Hello>
+
+				{#if name == "Anna"}
+					<h1>what a special name</h1>
+				{/if}
 			{/for}
     </div>
   `)

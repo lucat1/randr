@@ -31,9 +31,15 @@ func toNodes(nodes []*node) ([]ast.Node, []ast.Stmt) {
 			switch rule {
 			case "for":
 				tok, extra, err = makeFor(node)
+				break
 			
+			case "if":
+				tok, extra, err = makeIf(node)
+				break
+
 			case "randr":
 				tok, extra, err = makeComponent(node)
+				break
 
 			default:
 				log.Fatal("Unhandled expression: " + node.value)

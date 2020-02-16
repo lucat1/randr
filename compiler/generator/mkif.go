@@ -10,13 +10,13 @@ import (
 // makeFor generates a for loop in golang ast
 // from a string, also doing some typechecking
 // via the integrated golang parser (parsing a fake expr/stmt)
-func makeFor(expr *node) (ast.Node, []ast.Stmt, error) {
+func makeIf(expr *node) (ast.Node, []ast.Stmt, error) {
 	_res := random(10)
 	res := makeLit(_res)
 	input := expr.value[2 : len(expr.value)-1]
 	stmt, err := parseStmt(input + " {}")
 	if err != nil {
-		return nil, nil, errors.New("Could not parse for loop: " + err.Error())
+		return nil, nil, errors.New("Could not parse if statement: " + err.Error())
 	}
 	forLoop := reflect.Indirect(reflect.ValueOf(stmt))
 
@@ -45,5 +45,5 @@ func makeFor(expr *node) (ast.Node, []ast.Stmt, error) {
 		}, nil
 	}
 
-	return nil, nil, errors.New("Cannot set for loop body")
+	return nil, nil, errors.New("Cannot set if body")
 }
