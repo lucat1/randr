@@ -18,7 +18,8 @@ func Hello(ctx randr.Context) string {
 	props := ctx.Props.(*HelloProps)
 
 	return randr.HTML(`
-    <h1 style="color: red">Hello {props.Name}!; children: {props.Children}</h1>
+		<h1 style="color: red">Hello {props.Name}!; children: {props.Children}</h1>
+		<div>{ctx.Data["parentData"].(string)}</div>
   `)
 }
 
@@ -28,6 +29,8 @@ func MultipleHellos(ctx randr.Context) string {
 		"Anna",
 		"Tess",
 	}
+
+	ctx.Data["parentData"] = "Parent data should be displayed"
 
 	return randr.HTML(`
 		<div>
