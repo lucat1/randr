@@ -17,7 +17,7 @@ type Context struct {
 	// Data is a map containing the rendering
 	// context data, set by components
 	// so that their children can access it
-	Data *map[string]interface{}
+	Data map[string]interface{}
 }
 
 // Inherit inherits all the available data from the ancestor

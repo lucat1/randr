@@ -53,5 +53,6 @@ func MultipleHellos(ctx randr.Context) string {
 }
 
 func main() {
-	fmt.Println(randr.MustRender(MultipleHellos, nil))
+	res, _ := randr.Render(MultipleHellos, nil)
+	fmt.Println(res)
 }

@@ -66,7 +66,7 @@ func makeComponent(expr *node) (ast.Node, []ast.Stmt, error) {
 
 	if len(children) > 0 {
 		// Apply any children as the item Children
-		// inside the props struct in the go ast
+		// inside the props struct
 		props.Elts = append(props.Elts, &ast.KeyValueExpr{
 			Key: makeIdent("Children"),
 			Value: add(children).(ast.Expr),
@@ -76,6 +76,7 @@ func makeComponent(expr *node) (ast.Node, []ast.Stmt, error) {
 	return &ast.CallExpr{
 		Args: []ast.Expr{
 			makeIdent(name),
+			makeIdent("ctx"), // SHOULDN'T BE HARDCODED :/
 			&ast.UnaryExpr{
 				Op: token.AND,
 				X: props,

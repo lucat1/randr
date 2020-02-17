@@ -36,7 +36,7 @@ func makeIf(expr *node) (ast.Node, []ast.Stmt, error) {
 	if foundElse {
 		// build both the body and the else block
 		bodyChildren := expr.children[:elseIndex]
-		elseChildren := expr.children[elseIndex:]
+		elseChildren := expr.children[elseIndex+1:]
 		body = makeBlock(_res, bodyChildren)
 		els = makeBlock(_res, elseChildren)
 	} else {

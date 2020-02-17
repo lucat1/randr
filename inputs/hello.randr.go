@@ -31,9 +31,16 @@ func MultipleHellos(ctx randr.Context) string {
 		var MRAjWwhTHc string
 		for i :=
 			1; i < 5; i++ {
-			MRAjWwhTHc += name + ` -- #` + strconv.Itoa(i) + ` `
+			var tcuAxhxKQF string
+			if name ==
+				"Anna" {
+				tcuAxhxKQF += `<h1>what a special name</h1>`
+			} else {
+				tcuAxhxKQF += `<h1>boring name</h1>`
+			}
+			MRAjWwhTHc += name + ` -- #` + strconv.Itoa(i) + ` ` + tcuAxhxKQF
 		}
-		XVlBzgbaiC += randr.MustRender(Hello, &HelloProps{Name: name, Children: `This is a test ` + name + MRAjWwhTHc})
+		XVlBzgbaiC += randr.MustRender(Hello, ctx, &HelloProps{Name: name, Children: `This is a test ` + name + MRAjWwhTHc})
 	}
 
 	return `<div><h1>Hello list</h1>` + XVlBzgbaiC + `</div>`
@@ -41,5 +48,6 @@ func MultipleHellos(ctx randr.Context) string {
 }
 
 func main() {
-	fmt.Println(randr.MustRender(MultipleHellos, nil))
+	res, _ := randr.Render(MultipleHellos, nil)
+	fmt.Println(res)
 }
