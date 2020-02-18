@@ -14,7 +14,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/lucat1/randr/compiler/generator"
+	"github.com/lucat1/randr/rcc/generator"
 	"golang.org/x/tools/go/ast/astutil"
 )
 

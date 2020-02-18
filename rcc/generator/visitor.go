@@ -5,7 +5,7 @@ import (
 	"go/token"
 	"log"
 
-	"github.com/lucat1/randr/compiler/parser"
+	"github.com/lucat1/randr/rcc/parser"
 	"golang.org/x/tools/go/ast/astutil"
 )
 

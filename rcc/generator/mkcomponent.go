@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/iancoleman/strcase"
-	"github.com/lucat1/randr/compiler/parser"
+	"github.com/lucat1/randr/rcc/parser"
 	"golang.org/x/net/html"
 )
 
