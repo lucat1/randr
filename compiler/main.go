@@ -117,7 +117,7 @@ func compileFile(input string, output string) error {
 			return err
 		}
 	}
-	
+
 	log.Printf("Writing file to %s", out)
 	return ioutil.WriteFile(out, compiled.Bytes(), 0644)
 }
