@@ -15,7 +15,6 @@ import (
 	"strings"
 
 	"github.com/lucat1/randr/compiler/generator"
-	cparser "github.com/lucat1/randr/compiler/parser"
 	"golang.org/x/tools/go/ast/astutil"
 )
 
@@ -93,7 +92,6 @@ func compileFile(input string, output string) error {
 		return err
 	}
 
-	cparser.CheckComment(node, fset)
 	astutil.Apply(node, generator.Visit(fset, node), nil)
 	var compiled bytes.Buffer
 	if err = printer.Fprint(&compiled, fset, node); err != nil {

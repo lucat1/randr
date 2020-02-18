@@ -1,10 +1,7 @@
 package main
 
-// +build ignore
-
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/lucat1/randr"
 )

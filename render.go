@@ -14,7 +14,7 @@ func RenderWithData(root Component, ctx Context) (string, Context) {
 func Render(root Component, props interface{}) (string, Context) {
 	ctx := Context{
 		Props: props,
-		Data: map[string]interface{}{},
+		Data: map[ContextKey]interface{}{},
 	}
 
 	return RenderWithData(root, ctx)

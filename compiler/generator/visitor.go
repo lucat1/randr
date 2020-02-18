@@ -25,6 +25,8 @@ func Visit(fset *token.FileSet, node *ast.File) astutil.ApplyFunc {
 		}
 	}
 
+	addComment(node)
+
 	if !found {
 		log.Fatal("Cannot compile because it doesn't import the library")
 	}

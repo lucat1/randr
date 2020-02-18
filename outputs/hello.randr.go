@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"strconv"
+	"fmt"	/* This code is auto-generated; DO NOT EDIT */
 
 	"github.com/lucat1/randr"
 )
@@ -32,7 +31,8 @@ func MultipleHellos(ctx randr.Context) string {
 	for _, name := range names {
 		var MRAjWwhTHc string
 		for i :=
-			1; i < 5; i++ {
+			1; i <
+			5; i++ {
 			var tcuAxhxKQF string
 			if name ==
 				"Anna" {
