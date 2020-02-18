@@ -46,12 +46,10 @@ func main() {
 		log.Fatal("Could not stat input source: " + err.Error())
 	}
 
-	isDir := fi.Mode().IsDir()
-	if !isDir {
-		// Single file yay :)
-		checkCompile(compileFile(input, output))
-	} else {
+	if fi.Mode().IsDir() {
 		handleDirectory(input, output)
+	} else {
+		checkCompile(compileFile(input, output))
 	}
 }
 
@@ -63,8 +61,10 @@ func handleDirectory(input string, output string) {
 
 	for _, file := range files {
 		in := path.Join(input, file.Name())
-		if file.Mode().IsDir() && *recursive {
-			handleDirectory(in, output)
+		if file.Mode().IsDir() {
+			if *recursive {
+				handleDirectory(in, output)
+			}
 			continue
 		}
 
@@ -107,14 +107,17 @@ func compileFile(input string, output string) error {
 	} else {
 		filename = strings.Replace(strings.Replace(input, originalInput, "", 1), ".go", "", 1)
 	}
+
 	out := strings.Replace(output, "[name]", filename, -1)
 	dir := filepath.Dir(out)
+
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		log.Println("Creating output directory: " + dir)
 		if err = os.Mkdir(dir, 0755); err != nil {
 			return err
 		}
 	}
+	
 	log.Printf("Writing file to %s", out)
 	return ioutil.WriteFile(out, compiled.Bytes(), 0644)
 }

@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/lucat1/randr"
 )
