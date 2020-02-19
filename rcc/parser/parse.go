@@ -2,7 +2,6 @@ package parser
 
 import (
 	"encoding/json"
-	"fmt"
 	"regexp"
 	"strings"
 
@@ -51,7 +50,6 @@ func loop(parent *html.Node, strict bool, raws []string, exprs []string) ([]stri
 					finalTag = strings.Join(append(scopes, name), ".")
 				}
 
-				fmt.Println(finalTag)
 				attrs, _ := json.Marshal(e.Attr)
 				exprs = append(exprs, "{#randr " + finalTag + " " + string(attrs) + "}")
 				raws = append(raws, "")
