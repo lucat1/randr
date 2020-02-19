@@ -2,6 +2,7 @@ package parser
 
 import (
 	"encoding/json"
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -38,10 +39,23 @@ func loop(parent *html.Node, strict bool, raws []string, exprs []string) ([]stri
 		case html.ElementNode:
 			tag := e.Data
 			if !IsTagValid(tag) {
+				var finalTag string
+				if !strings.Contains(tag, ".") {
+					// Simple tag from the same package
+					finalTag = strcase.ToCamel(tag)
+				} else {
+					parts := strings.Split(tag, ".")
+					scopes, name := parts[:len(parts)-1], parts[len(parts)-1]
+					// Capitalize only the name
+					name = strcase.ToCamel(name)
+					finalTag = strings.Join(append(scopes, name), ".")
+				}
+
+				fmt.Println(finalTag)
 				attrs, _ := json.Marshal(e.Attr)
-				exprs = append(exprs, "{#randr " + strcase.ToCamel(tag) + " " + string(attrs) + "}")
+				exprs = append(exprs, "{#randr " + finalTag + " " + string(attrs) + "}")
 				raws = append(raws, "")
-				raws, exprs = loop(e, strict || e.Data == "pre", raws, exprs)
+				raws, exprs = loop(e, strict || tag == "pre", raws, exprs)
 				exprs, raws = append(exprs, "{/randr}"), append(raws, "")
 				continue
 			}

@@ -28,7 +28,6 @@ func makeComponent(expr *node) (ast.Node, []ast.Stmt, error) {
 		return nil, nil, errors.New(`Cannot parse custom component arguments,
 		illegal usage of the internal #randr expression: ` + err.Error())
 	}
-	name = strcase.ToCamel(name)
 
 	var (
 		extras []ast.Stmt
