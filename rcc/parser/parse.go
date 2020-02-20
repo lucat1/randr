@@ -2,7 +2,6 @@ package parser
 
 import (
 	"encoding/json"
-	"fmt"
 	"regexp"
 	"strings"
 
@@ -143,7 +142,6 @@ func addToRaw(tba string, strict bool, raws []string, exprs []string) ([]string,
 func appendOpeningTag(node *html.Node, raws []string, exprs []string) ([]string, []string) {
 	raws, exprs = addToRaw("<"+node.Data, true, raws, exprs)
 	for _, attr := range node.Attr {
-		fmt.Println(attr.Val)
 		if attr.Val == "" {
 			// boolean value, true by default
 			raws, exprs = addToRaw(
