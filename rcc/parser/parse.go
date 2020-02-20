@@ -2,6 +2,7 @@ package parser
 
 import (
 	"encoding/json"
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -14,7 +15,7 @@ var curly = regexp.MustCompile("\\{(.*?)\\}")
 // Parse returns a golang ast from a string
 // containing an html template and some expressions
 func Parse(input string) ([]string, []string, error) {
-	input = input[1:len(input)-1] // remove trailing `` or ""
+	input = input[1 : len(input)-1]  // remove trailing `` or ""
 	input = strings.TrimSpace(input) // remove trailing spaces
 
 	// TODO: Handle <body> inside templates which is currently ignored
@@ -51,7 +52,7 @@ func loop(parent *html.Node, strict bool, raws []string, exprs []string) ([]stri
 				}
 
 				attrs, _ := json.Marshal(e.Attr)
-				exprs = append(exprs, "{#randr " + finalTag + " " + string(attrs) + "}")
+				exprs = append(exprs, "{#randr "+finalTag+" "+string(attrs)+"}")
 				raws = append(raws, "")
 				raws, exprs = loop(e, strict || tag == "pre", raws, exprs)
 				exprs, raws = append(exprs, "{/randr}"), append(raws, "")
@@ -78,7 +79,7 @@ func Text(input string, strict bool, raws []string, exprs []string) ([]string, [
 	if !strict {
 		input = strings.TrimSpace(input)
 	}
-	
+
 	matches := curly.FindAll([]byte(input), -1) // Find all expressions
 	if len(matches) > 0 {
 		raws, exprs = literate(input, matches, strict, raws, exprs) // Split static strings and expressions
@@ -96,7 +97,7 @@ func literate(input string, matches [][]byte, strict bool, raws []string, exprs 
 		// and order raw strings with them
 		parts := strings.SplitN(input, string(match), 2)
 		raws, exprs = addToRaw(parts[0], strict, raws, exprs)
-		
+
 		if len(parts) > 1 {
 			exprs = append(exprs, string(match))
 			if parts[1] != "" {
@@ -118,7 +119,7 @@ func literate(input string, matches [][]byte, strict bool, raws []string, exprs 
 // in two ways depending on the length of the exprs array
 func addToRaw(tba string, strict bool, raws []string, exprs []string) ([]string, []string) {
 	if !strict {
-		// Trim useless spaces to be able to do some 
+		// Trim useless spaces to be able to do some
 		// cleaner code output afterwards
 		tba = strings.Replace(strings.Replace(tba, "\t", "", -1), "\n", "", -1)
 	}
@@ -140,12 +141,25 @@ func addToRaw(tba string, strict bool, raws []string, exprs []string) ([]string,
 // and all its attributes preparing the the children
 // to be handled in loop afterwards
 func appendOpeningTag(node *html.Node, raws []string, exprs []string) ([]string, []string) {
-	raws, exprs = addToRaw("<" + node.Data, true, raws, exprs)
+	raws, exprs = addToRaw("<"+node.Data, true, raws, exprs)
 	for _, attr := range node.Attr {
+		fmt.Println(attr.Val)
+		if attr.Val == "" {
+			// boolean value, true by default
+			raws, exprs = addToRaw(
+				" "+attr.Key,
+				true, raws, exprs,
+			)
+			continue
+		}
+
 		raws, exprs = addToRaw(
-			" " + attr.Key + "=\"" + attr.Val + "\"", 
+			" "+attr.Key+"=\"",
 			true, raws, exprs,
 		)
+		raws, exprs = Text(attr.Val, true, raws, exprs)
+
+		raws, exprs = addToRaw("\"", true, raws, exprs)
 	}
 	raws, exprs = addToRaw(">", true, raws, exprs)
 
@@ -155,5 +169,5 @@ func appendOpeningTag(node *html.Node, raws []string, exprs []string) ([]string,
 // appendClosingTag appends the ending part of
 // the tag after all children have been handled
 func appendClosingTag(node *html.Node, raws []string, exprs []string) ([]string, []string) {
-	return addToRaw("</" + node.Data + ">", true, raws, exprs)
+	return addToRaw("</"+node.Data+">", true, raws, exprs)
 }
