@@ -133,4 +133,8 @@ var TAGS = []string{
 	"var",
 	"video",
 	"wbr",
+
+	// svg tags
+	"path",
+	"Text",
 }
