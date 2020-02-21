@@ -27,7 +27,7 @@ func Hello(ctx randr.Context) string {
 
 	return randr.HTML(`
 		<h1 style="color: red">Hello {props.Name}!; children: {props.Children}</h1>
-		<div>{ctx.Data["parentData"].(string)}</div>
+		<div class="test {props.Name}">{ctx.Data["parentData"].(string)}</div>
   `)
 }
 
