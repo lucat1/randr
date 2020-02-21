@@ -136,5 +136,5 @@ var TAGS = []string{
 
 	// svg tags
 	"path",
-	"Text",
+	"text",
 }
