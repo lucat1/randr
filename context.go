@@ -30,7 +30,7 @@ type Context struct {
 // you wanna give different context data to the component
 func Inherit(ancestor Context, successor Context) Context {
 	res := Context{
-		Props: &BasicProps{},
+		Props: nil,
 		Data: ancestor.Data,
 	}
 	if successor.Props != nil {

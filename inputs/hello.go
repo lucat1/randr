@@ -2,9 +2,13 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/lucat1/randr"
 )
+
+// to keep the strconv dependency
+var _ = strconv.Itoa
 
 type HelloProps struct {
 	Children string
@@ -13,6 +17,12 @@ type HelloProps struct {
 
 // Hello renders a single h1 tag with an hello message
 func Hello(ctx randr.Context) string {
+	if ctx.Props == nil {
+		fmt.Println("test111")
+		return randr.HTML(`<h1>Hello World!</h1>`)
+	}
+
+	fmt.Println("test", ctx.Props.(*HelloProps))
 	props := ctx.Props.(*HelloProps)
 
 	return randr.HTML(`
@@ -33,6 +43,7 @@ func MultipleHellos(ctx randr.Context) string {
 	return randr.HTML(`
 		<div>
 			<h1>Hello list</h1>
+			<Hello></Hello>
 
 			{#for _, name := range names}
 				<Hello name="{name}">
