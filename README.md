@@ -6,6 +6,7 @@ Randr is a `golang` library to render HTML templates for `server-side rendering`
 
 ## Built with `randr`:
   - [lucat1/helmet](https://github.com/lucat1/helmet) - A `react-helmet` like component
+  - [lucat1/css](https://github.com/lucat1/css) - A CSS styling library
 
 ## Installation
 
