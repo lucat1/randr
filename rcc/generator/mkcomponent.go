@@ -65,26 +65,29 @@ func makeComponent(expr *node) (ast.Node, []ast.Stmt, error) {
 				Value: value.(ast.Expr),
 			})
 		}
-	} else {
+	} else if len(expr.children) == 0 {
 		// If we dont have any children nor any attributes
 		// we can give `nil` as the props argument in MustRender
-		if len(expr.children) == 0 {
-			props = makeIdent("nil")
-			propsExpr = props
-		} else {
-			// BaiscProps only allow children, BUT
-			// we gotta make this dynamic(`randr` is hardcoded)
-			props = &ast.CompositeLit{
-				Type: makeIdent("randr.BasicProps"),
-				Elts: []ast.Expr{},
-			}
-			// Apply any children as the item Children
-			// inside the props struct
-			props.(*ast.CompositeLit).Elts = append(props.(*ast.CompositeLit).Elts, &ast.KeyValueExpr{
-				Key: makeIdent("Children"),
-				Value: add(children).(ast.Expr),
-			})
+		props = makeIdent("nil")
+		propsExpr = props
+	} else {
+		// BaiscProps only allow children, BUT
+		// we gotta make this dynamic(`randr` is hardcoded)
+		props = &ast.CompositeLit{
+			Type: makeIdent("randr.BasicProps"),
+			Elts: []ast.Expr{},
 		}
+	}
+	
+	// If we got a struct and some props,
+	// we must add them to the struct on the `Children` key
+	if len(children) > 0 && propsExpr == nil {
+		// Apply anly children as the item Children
+		// inside the props struct
+		props.(*ast.CompositeLit).Elts = append(props.(*ast.CompositeLit).Elts, &ast.KeyValueExpr{
+			Key: makeIdent("Children"),
+			Value: add(children).(ast.Expr),
+		})
 	}
 
 	// if propsExpr is nil it means we
