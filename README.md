@@ -12,16 +12,17 @@ Randr is a `golang` library to render HTML templates for `server-side rendering`
 
 To install the compiler and the library it is suggested to use the standard `go get` command:
 
-```bash
+```sh
   $ go get -u github.com/lucat1/randr/rcc # get the compiler
   $ go get -u github.com/lucat1/randr # get the library (inside a project root)
 ```
 
 ## Usage
 
-To compile a file or a folder of files you should use the `rcc`(`randr code compiler`) tool as follows: (supposing `$GOPATH/bin` is available inside your `$PATH`)
+> NOTE: we assume that `$GOPATH/bin` is available inside your `$PATH`.
+To compile a file or a folder of files you should use the `rcc`(`randr code compiler`) tool as follows:
 
-```bash
+```sh
   $ rcc <input> <output>
 ```
 
@@ -31,6 +32,6 @@ To compile a file or a folder of files you should use the `rcc`(`randr code comp
 
 Here's an example:
 
-```bash
+```sh
   $ rcc src "dist/[name].randr.go"
 ```
