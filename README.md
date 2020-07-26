@@ -20,6 +20,7 @@ To install the compiler and the library it is suggested to use the standard `go 
 ## Usage
 
 > NOTE: we assume that `$GOPATH/bin` is available inside your `$PATH`.
+
 To compile a file or a folder of files you should use the `rcc`(`randr code compiler`) tool as follows:
 
 ```sh
